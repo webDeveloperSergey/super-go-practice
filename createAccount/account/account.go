@@ -42,7 +42,7 @@ func (acc *Account) ToBytesJson() ([]byte, error) {
 	return jsonData, nil
 }
 
-func NewAccountWithTimeStamp(login, pwd, urlString string) (*Account, error) {
+func NewAccount(login, pwd, urlString string) (*Account, error) {
 	if 	login == "" {
 		return nil, errors.New("INVALID_LOGIN")
 	}
