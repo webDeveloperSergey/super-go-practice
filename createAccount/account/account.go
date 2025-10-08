@@ -1,6 +1,7 @@
 package account
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -9,22 +10,17 @@ import (
 )
 
 type Account struct {
-	login string
-	pwd string
-	url string
-}
-
-// Высосанный из пальца пример для понимания композиции в GO
-type accountWithTimeStamp struct {
-	createdAt time.Time
-	updatedAt time.Time
-	Account
+	Login string `json:"login"`
+	Pwd string `json:"pwd"`
+	Url string `json:"url"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 var lettersRune = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!*-")
 
 func (acc Account) OutputPassword() {
-	fmt.Print(acc.login + " " + acc.pwd + " " + acc.url)
+	fmt.Print(acc.Login + " " + acc.Pwd + " " + acc.Url)
 }
 
 func (acc *Account) generatePassword(n int) {
@@ -34,10 +30,19 @@ func (acc *Account) generatePassword(n int) {
 		newPwd[index] = lettersRune[rand.Intn(len(lettersRune))]
 	}
 
-	acc.pwd = string(newPwd)
+	acc.Pwd = string(newPwd)
 }
 
-func NewAccountWithTimeStamp(login, pwd, urlString string) (*accountWithTimeStamp, error) {
+func (acc *Account) ToBytesJson() ([]byte, error) {
+	jsonData, err := json.Marshal(acc)
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonData, nil
+}
+
+func NewAccountWithTimeStamp(login, pwd, urlString string) (*Account, error) {
 	if 	login == "" {
 		return nil, errors.New("INVALID_LOGIN")
 	}
@@ -48,14 +53,12 @@ func NewAccountWithTimeStamp(login, pwd, urlString string) (*accountWithTimeStam
 		return nil, errors.New("INVALID_URL")
 	}
 
-	 newAccount := &accountWithTimeStamp {
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
-		Account: Account{
-			login: login,
-			pwd: pwd,
-			url: urlString,
-		},
+	 newAccount := &Account{
+		Login: login,
+		Pwd: pwd,
+		Url: urlString,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	if pwd == "" {
