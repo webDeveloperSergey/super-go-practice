@@ -3,18 +3,23 @@ package main
 import (
 	"create-account/account"
 	"fmt"
+
+	"github.com/fatih/color"
 )
 
 
 
 func main() {
-	userActions := map[int]func() {
+
+
+	fmt.Println("__Менеджер паролей__")
+	vault := account.NewVault()
+
+	userActions := map[int]func(vault *account.Vault) {
 		1: createAccount,
 		2: findAccount,
 		3: deleteAccount,
 	}
-
-	fmt.Println("__Менеджер паролей__")
 
 	for {
 		action, err := getMenu()
@@ -23,7 +28,7 @@ func main() {
 			return
 		}
 
-		userActions[action]()
+		userActions[action](vault)
 	}
 	
 }
@@ -42,7 +47,7 @@ func getMenu() (int, error) {
 	return action, err
 }
 
-func createAccount() {
+func createAccount(vault *account.Vault) {
 	login := getPromptData("Введите логин: ")
 	pwd := getPromptData("Введите пароль: ")
 	url := getPromptData("Введите URL: ")
@@ -53,12 +58,27 @@ func createAccount() {
 		return
 	}
 
-	vault := account.NewVault()
 	vault.AddAccounts(*myAccount)
 }
 
-func findAccount() {}
-func deleteAccount() {}
+func findAccount(vault *account.Vault) {
+	url := getPromptData("Введите URL для поиска: ")
+
+	fmt.Println("")
+	fmt.Println("Результаты поиска:")
+
+	accounts := vault.FindAccountByUrl(url)
+	if len(accounts) == 0 {
+		color.Red("Акакаунтов не найдено")
+		return
+	}
+
+	for index, account := range accounts {
+		account.Output(index)
+		fmt.Println("-----")
+	}
+}
+func deleteAccount(vault *account.Vault) {}
 
 func getPromptData(prompt string) string {
 	var result string

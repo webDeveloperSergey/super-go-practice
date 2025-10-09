@@ -3,6 +3,7 @@ package account
 import (
 	"create-account/files"
 	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -59,3 +60,16 @@ func (vault *Vault) AddAccounts(acc Account) {
 	files.WriteFile(dataJson, "data.json")
 }
 
+func (vault *Vault) FindAccountByUrl(urlString string) []Account {
+	var finedAccounts []Account
+
+	for _, account := range vault.Accounts {
+		isMatched := strings.Contains(account.Url, urlString)
+
+		if isMatched {
+			finedAccounts = append(finedAccounts, account)
+		}
+	}
+
+	return finedAccounts
+}

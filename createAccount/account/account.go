@@ -18,8 +18,12 @@ type Account struct {
 
 var lettersRune = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!*-")
 
-func (acc Account) OutputPassword() {
-	fmt.Print(acc.Login + " " + acc.Pwd + " " + acc.Url)
+func (acc Account) Output(index int) {
+	fmt.Println("Аккаунт" + " - " + fmt.Sprint(index + 1))
+
+	fmt.Println(acc.Login)
+	fmt.Println(acc.Pwd)
+	fmt.Println(acc.Url)
 }
 
 func (acc *Account) generatePassword(n int) {
@@ -31,8 +35,6 @@ func (acc *Account) generatePassword(n int) {
 
 	acc.Pwd = string(newPwd)
 }
-
-
 
 func NewAccount(login, pwd, urlString string) (*Account, error) {
 	if 	login == "" {
