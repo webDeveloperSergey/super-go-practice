@@ -48,7 +48,7 @@ func NewVault() *Vault {
 	return &vault
 }
 
-func (vault *Vault) AddAccounts(acc Account) {
+func (vault *Vault) AddAccount(acc Account) {
 	vault.Accounts = append(vault.Accounts, acc)
 	vault.save()
 }

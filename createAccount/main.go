@@ -58,7 +58,7 @@ func createAccount(vault *account.Vault) {
 		return
 	}
 
-	vault.AddAccounts(*myAccount)
+	vault.AddAccount(*myAccount)
 }
 
 func findAccount(vault *account.Vault) {
