@@ -2,7 +2,6 @@ package main
 
 import (
 	"create-account/account"
-	"create-account/files"
 	"fmt"
 )
 
@@ -56,13 +55,6 @@ func createAccount() {
 
 	vault := account.NewVault()
 	vault.AddAccounts(*myAccount)
-	jsonData, err := vault.ToBytesJson()
-	if err != nil {
-		fmt.Print("Не удалось преобразовать данные в JSON")
-		return
-	}
-
-	files.WriteFile(jsonData, "data.json")
 }
 
 func findAccount() {}
