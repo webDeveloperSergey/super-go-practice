@@ -39,7 +39,7 @@ func getMenu() (int, error) {
 	fmt.Println("Выберите вариант:")
 	fmt.Println("1. Создать аккаунт")
 	fmt.Println("2. Найти аккаунт")
-	fmt.Println("3. Найти аккаунт")
+	fmt.Println("3. Удалить аккаунт")
 	fmt.Println("4. Выйти")
 
 	_, err := fmt.Scan(&action)
@@ -78,7 +78,19 @@ func findAccount(vault *account.Vault) {
 		fmt.Println("-----")
 	}
 }
-func deleteAccount(vault *account.Vault) {}
+func deleteAccount(vault *account.Vault) {
+	url := getPromptData("Введите URL для удаления аккаунта: ")
+
+	fmt.Println("")
+
+	isDeleted := vault.DeleteAccountByUrl(url)
+
+	if isDeleted {
+		color.Green("Запись успешно удалена")
+	} else {
+		color.Red("Не удалось удалить или найти запись")
+	}
+}
 
 func getPromptData(prompt string) string {
 	var result string
