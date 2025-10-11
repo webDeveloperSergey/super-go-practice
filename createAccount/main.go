@@ -15,6 +15,7 @@ func main() {
 
 	fmt.Println("__Менеджер паролей__")
 	vault := account.NewVault(files.NewDbJson("data.json"))
+	// vault := account.NewVault(cloud.NewDbCloud("https://test.ru"))
 
 	userActions := map[int]func(vault *account.VaultWithDb) {
 		1: createAccount,
