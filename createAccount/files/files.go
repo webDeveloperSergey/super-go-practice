@@ -5,8 +5,19 @@ import (
 	"os"
 )
 
-func ReadFile(name string) ([]byte, error) {
-	data, err := os.ReadFile(name)
+type DbJson struct {
+	filename string
+}
+
+// Обращаемся к структуре DbJson и создаем функцию конструктор newDbJson, которая инитит новый DbJson с именем
+func NewDbJson (name string) *DbJson {
+	return &DbJson{
+		filename: name,
+	}
+}
+
+func (db *DbJson) Read() ([]byte, error) {
+	data, err := os.ReadFile(db.filename)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -15,8 +26,8 @@ func ReadFile(name string) ([]byte, error) {
 	return data, nil
 }
 
-func WriteFile(content []byte, name string) {
-	file, err := os.Create(name)
+func (db *DbJson) Write(content []byte) {
+	file, err := os.Create(db.filename)
 	if err != nil {
 		fmt.Println(err)
 	}

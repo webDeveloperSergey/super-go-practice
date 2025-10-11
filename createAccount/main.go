@@ -2,6 +2,7 @@ package main
 
 import (
 	"create-account/account"
+	"create-account/files"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -13,9 +14,9 @@ func main() {
 
 
 	fmt.Println("__Менеджер паролей__")
-	vault := account.NewVault()
+	vault := account.NewVault(files.NewDbJson("data.json"))
 
-	userActions := map[int]func(vault *account.Vault) {
+	userActions := map[int]func(vault *account.VaultWithDb) {
 		1: createAccount,
 		2: findAccount,
 		3: deleteAccount,
@@ -47,7 +48,7 @@ func getMenu() (int, error) {
 	return action, err
 }
 
-func createAccount(vault *account.Vault) {
+func createAccount(vault *account.VaultWithDb) {
 	login := getPromptData("Введите логин: ")
 	pwd := getPromptData("Введите пароль: ")
 	url := getPromptData("Введите URL: ")
@@ -61,7 +62,7 @@ func createAccount(vault *account.Vault) {
 	vault.AddAccount(*myAccount)
 }
 
-func findAccount(vault *account.Vault) {
+func findAccount(vault *account.VaultWithDb) {
 	url := getPromptData("Введите URL для поиска: ")
 
 	fmt.Println("")
@@ -78,7 +79,7 @@ func findAccount(vault *account.Vault) {
 		fmt.Println("-----")
 	}
 }
-func deleteAccount(vault *account.Vault) {
+func deleteAccount(vault *account.VaultWithDb) {
 	url := getPromptData("Введите URL для удаления аккаунта: ")
 
 	fmt.Println("")
