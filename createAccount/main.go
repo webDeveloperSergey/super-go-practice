@@ -5,6 +5,7 @@ import (
 	"create-account/files"
 	"create-account/output"
 	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -17,42 +18,34 @@ func main() {
 	vault := account.NewVault(files.NewDbJson("data.json"))
 	// vault := account.NewVault(cloud.NewDbCloud("https://test.ru"))
 
-	userActions := map[int]func(vault *account.VaultWithDb) {
-		1: createAccount,
-		2: findAccount,
-		3: deleteAccount,
+	userActions := map[string]func(vault *account.VaultWithDb) {
+		"1": createAccount,
+		"2": findAccount,
+		"3": deleteAccount,
 	}
 
 	for {
-		action, err := getMenu()
+		action := getPromptData([]string{
+			"1. Создать аккаунт",
+			"2. Найти аккаунт",
+			"3. Удалить аккаунт",
+			"4. Выйти",
+			"Выберете вариант",
+		})
 
-		if err != nil || action > 3 {
-			return
-		}
+		// if err != nil || action > 3 {
+		// 	return
+		// }
 
 		userActions[action](vault)
 	}
 	
 }
 
-func getMenu() (int, error) {
-	var action int
-
-	fmt.Println("Выберите вариант:")
-	fmt.Println("1. Создать аккаунт")
-	fmt.Println("2. Найти аккаунт")
-	fmt.Println("3. Удалить аккаунт")
-	fmt.Println("4. Выйти")
-
-	_, err := fmt.Scan(&action)
-
-	return action, err
-}
-
 func createAccount(vault *account.VaultWithDb) {
-	login := getPromptData("Введите логин: ")
-	pwd := getPromptData("Введите пароль: ")
-	url := getPromptData("Введите URL: ")
+	login := getPromptData([]string{"Введите логин "})
+	pwd := getPromptData([]string{"Введите пароль "})
+	url := getPromptData([]string{"Введите URL "})
 
 	myAccount, err := account.NewAccount(login, pwd, url)
 	if err != nil {
@@ -64,7 +57,7 @@ func createAccount(vault *account.VaultWithDb) {
 }
 
 func findAccount(vault *account.VaultWithDb) {
-	url := getPromptData("Введите URL для поиска: ")
+	url := getPromptData([]string{"Введите URL для поиска: "})
 
 	fmt.Println("")
 	fmt.Println("Результаты поиска:")
@@ -81,7 +74,7 @@ func findAccount(vault *account.VaultWithDb) {
 	}
 }
 func deleteAccount(vault *account.VaultWithDb) {
-	url := getPromptData("Введите URL для удаления аккаунта: ")
+	url := getPromptData([]string{"Введите URL для удаления аккаунта: "})
 
 	fmt.Println("")
 
@@ -94,9 +87,16 @@ func deleteAccount(vault *account.VaultWithDb) {
 	}
 }
 
-func getPromptData(prompt string) string {
+func getPromptData[TPrompt any](prompt []TPrompt) string {
+	for i, line := range prompt {
+		if i == len(prompt)-1 {
+			fmt.Printf("%v: ", line)
+		} else {
+			fmt.Println(line)
+		}
+	}
+	
 	var result string
-	fmt.Print(prompt)
 	fmt.Scanln(&result)
 
 	return result
