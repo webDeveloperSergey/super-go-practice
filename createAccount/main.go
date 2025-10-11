@@ -24,6 +24,7 @@ func main() {
 		"3": deleteAccount,
 	}
 
+Menu:	
 	for {
 		action := getPromptData([]string{
 			"1. Создать аккаунт",
@@ -33,11 +34,13 @@ func main() {
 			"Выберете вариант",
 		})
 
-		// if err != nil || action > 3 {
-		// 	return
-		// }
+		currentAction := userActions[action]
 
-		userActions[action](vault)
+		if currentAction == nil {
+			break Menu
+		}
+
+		currentAction(vault)
 	}
 	
 }
