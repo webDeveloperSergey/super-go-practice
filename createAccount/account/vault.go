@@ -1,11 +1,10 @@
 package account
 
 import (
+	"create-account/output"
 	"encoding/json"
 	"strings"
 	"time"
-
-	"github.com/fatih/color"
 )
 
 type Db interface {
@@ -49,7 +48,7 @@ func NewVault(db Db) *VaultWithDb {
 	err = json.Unmarshal(file, &vault)
 
 	if err != nil {
-		color.Red("Не смогли разобрать файл data.json")
+		output.PrintError("Не смогли разобрать файл data.json")
 
 		return &VaultWithDb{
 			Vault: Vault{
@@ -111,7 +110,7 @@ func (vault *VaultWithDb) save() {
 
 	dataJson, err := vault.Vault.ToBytesJson()
 	if err != nil {
-		color.Red("Не удалось преобразовать")
+		output.PrintError("Не удалось преобразовать")
 	}
 
 	vault.db.Write(dataJson)

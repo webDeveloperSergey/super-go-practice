@@ -3,8 +3,8 @@ package main
 import (
 	"create-account/account"
 	"create-account/files"
+	"create-account/output"
 	"fmt"
-
 	"github.com/fatih/color"
 )
 
@@ -56,7 +56,7 @@ func createAccount(vault *account.VaultWithDb) {
 
 	myAccount, err := account.NewAccount(login, pwd, url)
 	if err != nil {
-		fmt.Print("Неверно введет URL или Логин")
+		output.PrintError("Неверно введет URL или Логин")
 		return
 	}
 
@@ -71,7 +71,7 @@ func findAccount(vault *account.VaultWithDb) {
 
 	accounts := vault.FindAccountByUrl(url)
 	if len(accounts) == 0 {
-		color.Red("Акакаунтов не найдено")
+		output.PrintError("Аккаунтов не найдено")
 		return
 	}
 
@@ -90,7 +90,7 @@ func deleteAccount(vault *account.VaultWithDb) {
 	if isDeleted {
 		color.Green("Запись успешно удалена")
 	} else {
-		color.Red("Не удалось удалить или найти запись")
+		output.PrintError("Не удалось удалить или найти запись")
 	}
 }
 
