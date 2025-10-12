@@ -2,11 +2,13 @@ package main
 
 import (
 	"create-account/account"
+	"create-account/encrypter"
 	"create-account/files"
 	"create-account/output"
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 var menuActions = []string{
@@ -18,8 +20,14 @@ var menuActions = []string{
 }
 
 func main() {
+	err := godotenv.Load()
+  if err != nil {
+    output.PrintError("Не удалось загрузить файл .env")
+  }
+
+	
 	fmt.Println("__Менеджер паролей__")
-	vault := account.NewVault(files.NewDbJson("data.json"))
+	vault := account.NewVault(files.NewDbJson("data.vault"), *encrypter.NewEncrypter())
 	// vault := account.NewVault(cloud.NewDbCloud("https://test.ru"))
 
 	userActions := map[string]func(vault *account.VaultWithDb) {

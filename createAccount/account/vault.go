@@ -1,6 +1,7 @@
 package account
 
 import (
+	"create-account/encrypter"
 	"create-account/output"
 	"encoding/json"
 	"strings"
@@ -20,6 +21,7 @@ type Vault struct {
 type VaultWithDb struct {
 	Vault
 	db Db
+	enc encrypter.Encrypter
 }
 
 func (vault *Vault) ToBytesJson() ([]byte, error) {
@@ -31,7 +33,7 @@ func (vault *Vault) ToBytesJson() ([]byte, error) {
 	return jsonData, nil
 }
 
-func NewVault(db Db) *VaultWithDb {
+func NewVault(db Db, enc encrypter.Encrypter) *VaultWithDb {
 	file, err := db.Read()
 
 	if err != nil {
@@ -41,14 +43,17 @@ func NewVault(db Db) *VaultWithDb {
 				UpdatedAt: time.Now(),
 			},
 			db: db,
+			enc: enc,
 		}
 	}
 
+	data := enc.Decrypt(file)
+
 	var vault Vault
-	err = json.Unmarshal(file, &vault)
+	err = json.Unmarshal(data, &vault)
 
 	if err != nil {
-		output.PrintError("Не смогли разобрать файл data.json")
+		output.PrintError("Не смогли разобрать файл data.vault")
 
 		return &VaultWithDb{
 			Vault: Vault{
@@ -56,12 +61,14 @@ func NewVault(db Db) *VaultWithDb {
 				UpdatedAt: time.Now(),
 			},
 			db: db,
+			enc: enc,
 		}
 	}
 
 	return &VaultWithDb{
 		Vault: vault,
 		db: db,
+		enc: enc,
 	}
 }
 
@@ -109,9 +116,10 @@ func (vault *VaultWithDb) save() {
 	vault.UpdatedAt = time.Now()
 
 	dataJson, err := vault.Vault.ToBytesJson()
+	encData := vault.enc.Encrypt(dataJson)
 	if err != nil {
 		output.PrintError("Не удалось преобразовать")
 	}
 
-	vault.db.Write(dataJson)
+	vault.db.Write(encData)
 }
