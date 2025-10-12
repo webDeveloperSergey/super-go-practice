@@ -1,3 +1,7 @@
+# local env files
+.env*
+!.env*.sample
+
+# files
 *.json
-*.env
 *.vault
